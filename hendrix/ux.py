@@ -93,7 +93,7 @@ def assignDeploymentInstance(action, options):
     except Exception as e:
         tb = sys.exc_info()[2]
         msg = traceback.format_exc(tb)
-        chalk.red(msg, pipe=chalk.stderr)
+        chalk.red(msg, pipe=sys.stderr)
         os._exit(1)
 
 
@@ -236,7 +236,7 @@ def subprocessLaunch():
         options = REDIS.get('worker_args')
         assignDeploymentInstance(action='start', options=options)
     except Exception:
-        chalk.red('\n Encountered an unhandled exception while trying to %s hendrix.\n' % action, pipe=chalk.stderr)
+        chalk.red('\n Encountered an unhandled exception while trying to %s hendrix.\n' % action, pipe=sys.stderr)
         raise
 
 
@@ -264,5 +264,5 @@ def main(args=None):
     try:
         launch(*args, **options)
     except Exception:
-        chalk.red('\n Encountered an unhandled exception while trying to %s hendrix.\n' % action, pipe=chalk.stderr)
+        chalk.red('\n Encountered an unhandled exception while trying to %s hendrix.\n' % action, pipe=sys.stderr)
         raise
