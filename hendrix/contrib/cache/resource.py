@@ -4,9 +4,9 @@ except ImportError:
     from io import BytesIO as cStringIO
 
 try:
-    import urlparse
+    from urlparse import urlparse
 except ImportError:
-    from urllib.parse import urlparse
+    from urllib.parse import urlparse, urlunparse
 
 from twisted.internet import reactor
 from twisted.web import proxy, client
@@ -59,7 +59,7 @@ class CacheClient(proxy.ProxyClient):
         Ensures that the location port is a the given port value
         Used in `handleHeader`
         """
-        components = urlparse.urlparse(location)
+        components = urlparse(location)
         reverse_proxy_port = self.father.getHost().port
         reverse_proxy_host = self.father.getHost().host
         # returns an ordered dict of urlparse.ParseResult components
@@ -67,7 +67,7 @@ class CacheClient(proxy.ProxyClient):
         _components['netloc'] = '%s:%d' % (
             reverse_proxy_host, reverse_proxy_port
         )
-        return urlparse.urlunparse(_components.values())
+        return urlunparse(_components.values())
 
     def handleResponseEnd(self):
         """
@@ -186,7 +186,7 @@ class CacheProxyResource(proxy.ReverseProxyResource, MemoryCacheBackend):
             host = "%s:%d" % (self.host, self.port)
         request.requestHeaders.addRawHeader('host', host)
         request.content.seek(0, 0)
-        qs = urlparse.urlparse(request.uri)[4]
+        qs = urlparse(request.uri)[4]
         if qs:
             rest = self.path + '?' + qs
         else:

@@ -2,9 +2,9 @@
 Fuck YEAH. enthusiasm.
 """
 try:
-    import urlparse
+    from urlparse import urlparse, parse_qsl
 except ImportError:
-    from urllib.parse import urlparse
+    from urllib.parse import urlparse, parse_qsl
 
 from hendrix.contrib.cache import compressBuffer, decompressBuffer
 
@@ -59,8 +59,8 @@ class CacheBackend(object):
         helper function to return just the path (uri) and whether or not it's
         busted
         """
-        components = urlparse.urlparse(uri)
-        query = dict(urlparse.parse_qsl(components.query))
+        components = urlparse(uri)
+        query = dict(parse_qsl(components.query))
         bust = True
         bust &= bool(query)  # bust the cache if the query has stuff in it
         # bust the cache if the query key 'cache' isn't true
@@ -85,7 +85,7 @@ class CacheBackend(object):
         if request.method == "GET" and code / 100 == 2 and not bust:
             cache_control = response.headers.get('cache-control')
             if cache_control:
-                params = dict(urlparse.parse_qsl(cache_control))
+                params = dict(parse_qsl(cache_control))
                 if int(params.get('max-age', '0')) > 0:
                     cache_it = True
             if cache_it:

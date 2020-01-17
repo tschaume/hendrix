@@ -6,9 +6,9 @@ import gzip
 from datetime import datetime
 
 try:
-    import urlparse
+    from urlparse import parse_sql
 except ImportError:
-    from urllib.parse import urlparse
+    from urllib.parse import parse_qsl
 
 from time import strptime
 from twisted.web.resource import Resource
@@ -53,7 +53,7 @@ class CachedResource(Resource):
         max_age = 0
         cache_control = self.headers.get('cache-control')
         if cache_control:
-            params = dict(urlparse.parse_qsl(cache_control))
+            params = dict(parse_qsl(cache_control))
             max_age = int(params.get('max-age', '0'))
         return max_age
 
